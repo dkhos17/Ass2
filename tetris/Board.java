@@ -183,20 +183,22 @@ public class Board	{
 	 things above down. Returns the number of rows cleared.
 	*/
 	public int clearRows() {
-		List<Integer> filled = new ArrayList<>();
-		for(int y = 0; y < height; y++) {
-			if(fill_width[y] == width) filled.add(y);
-		}
-		for(int y0 : filled) {
-			for(int i = y0; i < height-1; i++) {
-				for(int j = 0; j < width; j++) {
-					board[i][j] = board[i+1][j];
+		int clearRows = 0;
+		int max_h = getMaxHeight();
+		for(int y = 0; y < max_h; y++) {
+			if(fill_width[y] == width) {
+				clearRows++;
+				for(int i = y; i < max_h-1; i++) {
+					for(int j = 0; j < width; j++) {
+						board[i][j] = board[i+1][j];
+					}
 				}
+				for(int i = 0; i < width; i++) board[max_h-1][i] = false;  
 			}
 		}
-		for(int i = 0; i < width; i++) board[i][height-1] = false;
+		for(int i = 0; i < width; i++) fill_height[i] -= clearRows;
 		sanityCheck();
-		return filled.size();
+		return clearRows;
 	}
 
 

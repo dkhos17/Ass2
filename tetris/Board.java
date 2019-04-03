@@ -1,6 +1,9 @@
 // Board.java
 package tetris;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  CS108 Tetris Board.
  Represents a Tetris board -- essentially a 2-d grid
@@ -13,7 +16,10 @@ public class Board	{
 	// Some ivars are stubbed out for you:
 	private int width;
 	private int height;
-	private boolean[][] grid;
+	private boolean[][] board;
+	private int[] fill_width, fill_height;
+	private Piece lastPiece;
+	private TPoint lastPoint;
 	private boolean DEBUG = true;
 	boolean committed;
 	
@@ -27,7 +33,10 @@ public class Board	{
 	public Board(int width, int height) {
 		this.width = width;
 		this.height = height;
-		grid = new boolean[width][height];
+		fill_width = new int[height];
+		fill_height = new int[width];
+		lastPoint = new TPoint(0,0);
+		board = new boolean[width][height];
 		committed = true;
 		
 		// YOUR CODE HERE
@@ -54,8 +63,10 @@ public class Board	{
 	 Returns the max column height present in the board.
 	 For an empty board this is 0.
 	*/
-	public int getMaxHeight() {	 
-		return 0; // YOUR CODE HERE
+	public int getMaxHeight() {
+		int max = 0;
+		for(int h : fill_height) max = Math.max(max, h);
+		return max; // YOUR CODE HERE
 	}
 	
 	
@@ -65,7 +76,16 @@ public class Board	{
 	*/
 	public void sanityCheck() {
 		if (DEBUG) {
-			// YOUR CODE HERE
+			int new_max_height = 0;
+			for(int i = 0; i < height; i++) {
+				int max_x = 0;
+				for(int j = 0; j < width; j++) {
+					if(board[i][j]) max_x++;
+				}
+				if(getRowWidth(i) != max_x) throw new RuntimeException("Row Count Problem");
+				if(max_x > 0) new_max_height = i;
+			}
+			if(new_max_height != getMaxHeight())throw new RuntimeException("Max Height problem");
 		}
 	}
 	
@@ -79,7 +99,12 @@ public class Board	{
 	 to compute this fast -- O(skirt length).
 	*/
 	public int dropHeight(Piece piece, int x) {
-		return 0; // YOUR CODE HERE
+		int[] skirt = piece.getSkirt();
+		int Y = 0;
+		for(int i = 0; i < skirt.length; i++) {
+			Y = Math.max(Y, fill_height[x+i] - skirt[i]);
+		}
+		return Y; // YOUR CODE HERE
 	}
 	
 	
@@ -89,7 +114,7 @@ public class Board	{
 	 The height is 0 if the column contains no blocks.
 	*/
 	public int getColumnHeight(int x) {
-		return 0; // YOUR CODE HERE
+		return fill_height[x]; // YOUR CODE HERE
 	}
 	
 	
@@ -98,7 +123,7 @@ public class Board	{
 	 the given row.
 	*/
 	public int getRowWidth(int y) {
-		 return 0; // YOUR CODE HERE
+		 return fill_width[y]; // YOUR CODE HERE
 	}
 	
 	
@@ -108,7 +133,7 @@ public class Board	{
 	 always return true.
 	*/
 	public boolean getGrid(int x, int y) {
-		return false; // YOUR CODE HERE
+		return board[x][y]; // YOUR CODE HERE
 	}
 	
 	
@@ -132,14 +157,24 @@ public class Board	{
 	 state. The client can use undo(), to recover the valid, pre-place state.
 	*/
 	public int place(Piece piece, int x, int y) {
-		// flag !committed problem
 		if (!committed) throw new RuntimeException("place commit problem");
-			
-		int result = PLACE_OK;
-		
-		// YOUR CODE HERE
-		
-		return result;
+		if(x + piece.getWidth() > this.width) return PLACE_OUT_BOUNDS;
+		if(y + piece.getHeight() > this.height) return PLACE_OUT_BOUNDS;
+		TPoint[] body = piece.getBody();
+		for(TPoint p : body) {
+			if(board[x+p.x][x+p.y])return PLACE_BAD;
+		}
+		lastPiece = piece;
+		lastPoint.x = x; lastPoint.y = y;
+		for(TPoint p : body) {
+			board[x+p.x][y+p.y] = true;
+			fill_width[y+p.y]++;
+			fill_height[x+p.x] = Math.max(fill_height[x+p.x], y+p.y+1);
+		}
+		for(int i = y; i <= getMaxHeight(); i++) {
+			if(fill_width[i] == width) return PLACE_ROW_FILLED;
+		}
+		return PLACE_OK;
 	}
 	
 	
@@ -148,10 +183,20 @@ public class Board	{
 	 things above down. Returns the number of rows cleared.
 	*/
 	public int clearRows() {
-		int rowsCleared = 0;
-		// YOUR CODE HERE
+		List<Integer> filled = new ArrayList<>();
+		for(int y = 0; y < height; y++) {
+			if(fill_width[y] == width) filled.add(y);
+		}
+		for(int y0 : filled) {
+			for(int i = y0; i < height-1; i++) {
+				for(int j = 0; j < width; j++) {
+					board[i][j] = board[i+1][j];
+				}
+			}
+		}
+		for(int i = 0; i < width; i++) board[i][height-1] = false;
 		sanityCheck();
-		return rowsCleared;
+		return filled.size();
 	}
 
 
@@ -164,7 +209,17 @@ public class Board	{
 	 See the overview docs.
 	*/
 	public void undo() {
-		// YOUR CODE HERE
+		if(committed) return;
+		commit();
+		TPoint[] body = lastPiece.getBody();
+		for(TPoint p : body) {
+			int x = lastPoint.x + p.x;
+			int y = lastPoint.y + p.y;
+			board[x][y] = false;
+			fill_width[y]--;
+			for(int i = 0; i < height; i++)
+				if(board[x][i])fill_height[x] = i;
+		}
 	}
 	
 	

@@ -36,13 +36,13 @@ public class Piece {
 	*/
 	public Piece(TPoint[] points) {
 		pointsList = new ArrayList<>();
-		body = points;
-		for(TPoint p : body) {
+		for(TPoint p : points) {
 			width = Math.max(width, p.x);
 			height = Math.max(height, p.y);
 			pointsList.add(p);
 		}
 //		Arrays.sort(body, (TPoint a, TPoint b) -> (a.x - b.x < 0 ? -1 : (b.x - a.x < 0 ? 1 : a.y - b.y)));
+		body = points;
 		width++; height++;
 		skirt = new int[width];
 		for(int i = 0; i < width; i++) {

@@ -102,9 +102,11 @@ public class PieceTest {
 		assertTrue(pc[3].equals(S1));
 		assertTrue(pc[4].equals(S2));
 		assertTrue(pc[5].equals(SQ));
+		assertTrue(pc[6].equals(pyr1));
 		assertFalse(pc[4].equals(ST));
 		assertFalse(pc[2].equals(L1));
 		assertFalse(pc[3].equals(S2));
+		assertTrue(pc[6].fastRotation().equals(pyr2));
 		assertTrue(SQ.equals(SQ.computeNextRotation()));
 	}
 	
@@ -127,10 +129,15 @@ public class PieceTest {
 		assertTrue(pc[5].equals(pc[5].fastRotation()));
 		assertTrue(pc[5].equals(pc[5].fastRotation().fastRotation()));
 		assertTrue(pc[5].equals(pc[5].fastRotation().fastRotation().fastRotation()));
+		assertTrue(pc[6].equals(pc[6].fastRotation().fastRotation().fastRotation().fastRotation()));
+		assertTrue(pyr2.equals(pc[6].fastRotation()));
+		assertTrue(pyr3.equals(pc[6].fastRotation().fastRotation()));
+		assertTrue(pyr4.equals(pc[6].fastRotation().fastRotation().fastRotation()));
+		assertTrue(pyr1.equals(pc[6].fastRotation().fastRotation().fastRotation().fastRotation()));
 		assertTrue(pc[5].equals(pc[5].fastRotation().fastRotation().fastRotation().fastRotation()));
 		assertFalse(pc[0].equals(pc[0].fastRotation().fastRotation().fastRotation()));
 		assertTrue(pc[0].equals(pc[0].fastRotation().fastRotation()));
 	}
 	
-	
+		
 }

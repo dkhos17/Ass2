@@ -17,7 +17,7 @@ public class Board	{
 	private int width;
 	private int height;
 	private boolean[][] board;
-	private int[] fill_width, fill_height;
+	private int[] fill_row, fill_col;
 	private Piece lastPiece;
 	private TPoint lastPoint;
 	private boolean DEBUG = true;
@@ -33,8 +33,8 @@ public class Board	{
 	public Board(int width, int height) {
 		this.width = width;
 		this.height = height;
-		fill_width = new int[height];
-		fill_height = new int[width];
+		fill_row = new int[height];
+		fill_col = new int[width];
 		lastPoint = new TPoint(0,0);
 		board = new boolean[width][height];
 		committed = true;
@@ -65,7 +65,7 @@ public class Board	{
 	*/
 	public int getMaxHeight() {
 		int max = 0;
-		for(int h : fill_height) max = Math.max(max, h);
+		for(int h : fill_col) max = Math.max(max, h);
 		return max; // YOUR CODE HERE
 	}
 	
@@ -80,10 +80,10 @@ public class Board	{
 			for(int i = 0; i < height; i++) {
 				int max_x = 0;
 				for(int j = 0; j < width; j++) {
-					if(board[i][j]) max_x++;
+					if(board[j][i]) max_x++;
 				}
 				if(getRowWidth(i) != max_x) throw new RuntimeException("Row Count Problem");
-				if(max_x > 0) new_max_height = i;
+				if(max_x > 0) new_max_height = i+1;
 			}
 			if(new_max_height != getMaxHeight())throw new RuntimeException("Max Height problem");
 		}
@@ -102,7 +102,7 @@ public class Board	{
 		int[] skirt = piece.getSkirt();
 		int Y = 0;
 		for(int i = 0; i < skirt.length; i++) {
-			Y = Math.max(Y, fill_height[x+i] - skirt[i]);
+			Y = Math.max(Y, fill_col[x+i] - skirt[i]);
 		}
 		return Y; // YOUR CODE HERE
 	}
@@ -114,7 +114,7 @@ public class Board	{
 	 The height is 0 if the column contains no blocks.
 	*/
 	public int getColumnHeight(int x) {
-		return fill_height[x]; // YOUR CODE HERE
+		return fill_col[x]; // YOUR CODE HERE
 	}
 	
 	
@@ -123,7 +123,7 @@ public class Board	{
 	 the given row.
 	*/
 	public int getRowWidth(int y) {
-		 return fill_width[y]; // YOUR CODE HERE
+		 return fill_row[y]; // YOUR CODE HERE
 	}
 	
 	
@@ -160,19 +160,21 @@ public class Board	{
 		if (!committed) throw new RuntimeException("place commit problem");
 		if(x + piece.getWidth() > this.width) return PLACE_OUT_BOUNDS;
 		if(y + piece.getHeight() > this.height) return PLACE_OUT_BOUNDS;
+		if(x < 0 || y < 0) return PLACE_OUT_BOUNDS;
 		TPoint[] body = piece.getBody();
 		for(TPoint p : body) {
-			if(board[x+p.x][x+p.y])return PLACE_BAD;
+			if(board[x+p.x][y+p.y])return PLACE_BAD;
 		}
+		committed = false;
 		lastPiece = piece;
 		lastPoint.x = x; lastPoint.y = y;
 		for(TPoint p : body) {
 			board[x+p.x][y+p.y] = true;
-			fill_width[y+p.y]++;
-			fill_height[x+p.x] = Math.max(fill_height[x+p.x], y+p.y+1);
+			fill_row[y+p.y]++;
+			fill_col[x+p.x] = Math.max(fill_col[x+p.x], y+p.y+1);
 		}
-		for(int i = y; i <= getMaxHeight(); i++) {
-			if(fill_width[i] == width) return PLACE_ROW_FILLED;
+		for(int i = y; i < y+piece.getHeight(); i++) {
+			if(fill_row[i] == width) return PLACE_ROW_FILLED;
 		}
 		return PLACE_OK;
 	}
@@ -185,19 +187,27 @@ public class Board	{
 	public int clearRows() {
 		int clearRows = 0;
 		int max_h = getMaxHeight();
-		for(int y = 0; y < max_h; y++) {
-			if(fill_width[y] == width) {
-				clearRows++;
-				for(int i = y; i < max_h-1; i++) {
+		for(int y = 0; y < height; y++) {
+			if(fill_row[y] == width) {
+				for(int i = y; i < height; i++) {
 					for(int j = 0; j < width; j++) {
-						board[i][j] = board[i+1][j];
+						if(i+1 < height) board[j][i] = board[j][i+1];
+						else board[j][i] = false;
 					}
-				}
-				for(int i = 0; i < width; i++) board[max_h-1][i] = false;  
+					if(i+1 < height) fill_row[i] = fill_row[i+1];
+					else fill_row[i] = 0;
+				} 
+				clearRows++; y--;
+			}
+			
+		}
+		for(int i = 0; i < width; i++) {
+			fill_col[i] = 0;
+			for(int j = 0; j < height; j++) {
+				if(board[i][j]) fill_col[i] = j+1;
 			}
 		}
-		for(int i = 0; i < width; i++) fill_height[i] -= clearRows;
-		sanityCheck();
+//		sanityCheck();
 		return clearRows;
 	}
 
@@ -218,9 +228,10 @@ public class Board	{
 			int x = lastPoint.x + p.x;
 			int y = lastPoint.y + p.y;
 			board[x][y] = false;
-			fill_width[y]--;
-			for(int i = 0; i < height; i++)
-				if(board[x][i])fill_height[x] = i;
+			fill_row[y]--;
+			fill_col[x] = 0;
+			for(int h = 0; h < height; h++)
+				if(board[x][h])fill_col[x] = h+1;
 		}
 	}
 	

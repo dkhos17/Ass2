@@ -106,7 +106,9 @@ public class Piece {
 	public Piece computeNextRotation() {
 		TPoint[] rot_body = new TPoint[body.length];
 		for(int i = 0; i < body.length; i++) {
-			rot_body[i] = new TPoint(body[i].y, width - body[i].x - 1);
+//			System.out.println(body[i].x +""+body[i].y+" ");
+			rot_body[i] = new TPoint(height - body[i].y - 1, body[i].x);
+//			System.out.println(rot_body[i].x +""+rot_body[i].y+" ");
 		}
 		return new Piece(rot_body); // YOUR CODE HERE
 	}

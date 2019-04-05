@@ -35,149 +35,193 @@ public class BoardTest {
 	}
 	
 	// Check the basic width/height/max after the one placement
-//	@Test
-//	public void testSample1() {
-//		assertEquals(1, b.getColumnHeight(0));
-//		assertEquals(2, b.getColumnHeight(1));
-//		assertEquals(2, b.getMaxHeight());
-//		assertEquals(3, b.getRowWidth(0));
-//		assertEquals(1, b.getRowWidth(1));
-//		assertEquals(0, b.getRowWidth(2));
-//		b.undo();
-//		b.commit();
-//		assertEquals(0, b.getRowWidth(0));
-//		assertEquals(0, b.getRowWidth(1));
-//		assertEquals(0, b.getRowWidth(2));
-//		assertEquals(0, b.place(pc[0], 0, 0));
-//		assertEquals(1, b.getRowWidth(0));
-//		assertEquals(1, b.getRowWidth(1));
-//		assertEquals(1, b.getRowWidth(2));
-//		assertEquals(4, b.getColumnHeight(0));
-//		assertEquals(4, b.getMaxHeight());
-//	}
-//	
-//	// Place sRotated into the board, then check some measures
-//	@Test
-//	public void testSample2() {
-//		b.commit();
-//		int result = b.place(sRotated, 1, 1);
-//		assertEquals(Board.PLACE_OK, result);
-//		assertEquals(1, b.getColumnHeight(0));
-//		assertEquals(4, b.getColumnHeight(1));
-//		assertEquals(3, b.getColumnHeight(2));
-//		assertEquals(4, b.getMaxHeight());
-//	}
-//	
-//	// Make  more tests, by putting together longer series of 
-//	// place, clearRows, undo, place ... checking a few col/row/max
-//	// numbers that the board looks right after the operations.
-//	
-//	@Test
-//	public void testSample3() {
-//		b.undo();
-//		b.commit();
-//		assertEquals(0, b.place(S, 0, 0));
-//		b.commit();
-//		assertEquals(2, b.getRowWidth(0));
-//		assertEquals(2, b.getRowWidth(1));
-//		assertEquals(1, b.getColumnHeight(0));
-//		assertEquals(2, b.getColumnHeight(1));
-//		assertEquals(2, b.getColumnHeight(2));
-//		assertEquals(2, b.getMaxHeight());
-//		assertEquals(1, b.place(pc[6].computeNextRotation().computeNextRotation().computeNextRotation(), 0, 1));
-//		b.commit();
-//		assertEquals(4, b.getMaxHeight());
-//		assertEquals(1, b.clearRows());
-//		assertEquals(3, b.getMaxHeight());
-//		assertEquals(2, b.getRowWidth(0));
-//		assertEquals(2, b.getRowWidth(1));
-//		assertEquals(1, b.getRowWidth(2));
-//		assertEquals(1, b.place(pc[0], 2, 0));
-//		b.commit();
-//		assertEquals(2, b.clearRows());
-//		assertEquals(2, b.getMaxHeight());
-//		assertEquals(2, b.getRowWidth(0));
-//		assertEquals(1, b.getRowWidth(1));
-//		assertEquals(1, b.place(pc[3].fastRotation(), 0, 0));
-//		assertEquals(3, b.getMaxHeight());
-//		assertEquals(2, b.clearRows());
-//		assertEquals(1, b.getRowWidth(0));
-//		assertEquals(0, b.getRowWidth(1));
-//		assertEquals(1, b.getColumnHeight(0));
-//		assertEquals(0, b.getColumnHeight(1));
-//	}
-//	
-//	@Test
-//	public void testSample4() {
-//		b.undo();
-//		b.commit();
-//		assertEquals(0, b.place(SQ, 0, 0));
-//		b.commit();
-//		assertEquals(2, b.getRowWidth(0));
-//		assertEquals(2, b.getRowWidth(1));
-//		assertEquals(2, b.getColumnHeight(0));
-//		assertEquals(2, b.getColumnHeight(1));
-//		assertEquals(0, b.getColumnHeight(2));
-//		assertEquals(2, b.getMaxHeight());
-//		assertEquals(1, b.place(pc[0], 2, 0));
-//		b.commit();
-//		assertEquals(2, b.clearRows());
-//		assertEquals(2, b.getMaxHeight());
-//		assertEquals(1, b.getRowWidth(0));
-//		assertEquals(1, b.getRowWidth(1));
-//		assertEquals(0, b.getColumnHeight(0));
-//		assertEquals(0, b.getColumnHeight(1));
-//		assertEquals(2, b.getColumnHeight(2));
-//		assertEquals(1, b.place(SQ, 0, 0));
-//		b.commit();
-//		assertEquals(2, b.clearRows());
-//		assertEquals(0, b.getMaxHeight());
-//		assertEquals(0, b.getRowWidth(0));
-//		assertEquals(0, b.getRowWidth(1));
-//		assertEquals(0, b.getColumnHeight(0));
-//		assertEquals(0, b.getColumnHeight(1));
-//		assertEquals(0, b.getColumnHeight(2));
-//	}
+	@Test
+	public void testSample1() {
+		assertEquals(1, b.getColumnHeight(0));
+		assertEquals(2, b.getColumnHeight(1));
+		assertEquals(2, b.getMaxHeight());
+		assertEquals(3, b.getRowWidth(0));
+		assertEquals(1, b.getRowWidth(1));
+		assertEquals(0, b.getRowWidth(2));
+		b.undo();
+		b.commit();
+		assertEquals(0, b.getRowWidth(0));
+		assertEquals(0, b.getRowWidth(1));
+		assertEquals(0, b.getRowWidth(2));
+		assertEquals(0, b.place(pc[0], 0, 0));
+		assertEquals(1, b.getRowWidth(0));
+		assertEquals(1, b.getRowWidth(1));
+		assertEquals(1, b.getRowWidth(2));
+		assertEquals(4, b.getColumnHeight(0));
+		assertEquals(4, b.getMaxHeight());
+	}
 	
-//	@Test
-//	public void testSample5() {
-//		b.undo(); b.commit();
-//		assertEquals(0, b.place(L, 0, 0));
-//		b.commit();
-//		assertEquals(0, b.clearRows());
-//		assertEquals(3, b.getMaxHeight());
-//		assertEquals(2, b.getRowWidth(0));
-//		assertEquals(1, b.getRowWidth(1));
-//		assertEquals(3, b.getColumnHeight(0));
-//		assertEquals(1, b.getColumnHeight(1));
-//		assertEquals(0, b.getColumnHeight(2));
-//		assertEquals(1, b.place(new Piece("1 0  1 1  1 2  0 2"), 1, 0));
-//		b.commit();
-//		assertEquals(3, b.getMaxHeight());
-//		assertEquals(3, b.getRowWidth(0));
-//		assertEquals(2, b.getRowWidth(1));
-//		assertEquals(3, b.getRowWidth(2));
-//		assertEquals(2, b.clearRows());
-//		assertEquals(1, b.getMaxHeight());
-//		assertEquals(2, b.getRowWidth(0));
-//		assertEquals(0, b.getRowWidth(1));
-//		assertEquals(1, b.getColumnHeight(0));
-//		assertEquals(0, b.getColumnHeight(1));
-//		assertEquals(1, b.getColumnHeight(2));
-//		assertEquals(1, b.place(pyr3, 0, 0));
-//		b.commit();
-//		assertEquals(2, b.getMaxHeight());
-//		assertEquals(3, b.getRowWidth(0));
-//		assertEquals(3, b.getRowWidth(1));
-//		assertEquals(0, b.getRowWidth(2));
-//		assertEquals(2, b.clearRows());
-//		assertEquals(0, b.getMaxHeight());
-//		assertEquals(0, b.getRowWidth(0));
-//		assertEquals(0, b.getRowWidth(1));
-//		assertEquals(0, b.getColumnHeight(0));
-//		assertEquals(0, b.getColumnHeight(1));
-//		assertEquals(0, b.getColumnHeight(2));
-//	}
+	// Place sRotated into the board, then check some measures
+	@Test
+	public void testSample2() {
+		b.commit();
+		int result = b.place(sRotated, 1, 1);
+		assertEquals(Board.PLACE_OK, result);
+		assertEquals(1, b.getColumnHeight(0));
+		assertEquals(4, b.getColumnHeight(1));
+		assertEquals(3, b.getColumnHeight(2));
+		assertEquals(4, b.getMaxHeight());
+	}
 	
-
+	// Make  more tests, by putting together longer series of 
+	// place, clearRows, undo, place ... checking a few col/row/max
+	// numbers that the board looks right after the operations.
+	
+	@Test
+	public void testSample3() {
+		b.undo();
+		b.commit();
+		assertEquals(0, b.place(S, 0, 0));
+		b.commit();
+		assertEquals(2, b.getRowWidth(0));
+		assertEquals(2, b.getRowWidth(1));
+		assertEquals(1, b.getColumnHeight(0));
+		assertEquals(2, b.getColumnHeight(1));
+		assertEquals(2, b.getColumnHeight(2));
+		assertEquals(2, b.getMaxHeight());
+		assertEquals(1, b.place(pc[6].computeNextRotation().computeNextRotation().computeNextRotation(), 0, 1));
+		b.commit();
+		assertEquals(4, b.getMaxHeight());
+		assertEquals(1, b.clearRows());
+		assertEquals(3, b.getMaxHeight());
+		assertEquals(2, b.getRowWidth(0));
+		assertEquals(2, b.getRowWidth(1));
+		assertEquals(1, b.getRowWidth(2));
+		assertEquals(1, b.place(pc[0], 2, 0));
+		b.commit();
+		assertEquals(2, b.clearRows());
+		assertEquals(2, b.getMaxHeight());
+		assertEquals(2, b.getRowWidth(0));
+		assertEquals(1, b.getRowWidth(1));
+		assertEquals(1, b.place(pc[3].fastRotation(), 0, 0));
+		assertEquals(3, b.getMaxHeight());
+		assertEquals(2, b.clearRows());
+		assertEquals(1, b.getRowWidth(0));
+		assertEquals(0, b.getRowWidth(1));
+		assertEquals(1, b.getColumnHeight(0));
+		assertEquals(0, b.getColumnHeight(1));
+	}
+	
+	@Test
+	public void testSample4() {
+		b.undo();
+		b.commit();
+		assertEquals(0, b.place(SQ, 0, 0));
+		b.commit();
+		assertEquals(2, b.getRowWidth(0));
+		assertEquals(2, b.getRowWidth(1));
+		assertEquals(2, b.getColumnHeight(0));
+		assertEquals(2, b.getColumnHeight(1));
+		assertEquals(0, b.getColumnHeight(2));
+		assertEquals(2, b.getMaxHeight());
+		assertEquals(1, b.place(pc[0], 2, 0));
+		b.commit();
+		assertEquals(2, b.clearRows());
+		assertEquals(2, b.getMaxHeight());
+		assertEquals(1, b.getRowWidth(0));
+		assertEquals(1, b.getRowWidth(1));
+		assertEquals(0, b.getColumnHeight(0));
+		assertEquals(0, b.getColumnHeight(1));
+		assertEquals(2, b.getColumnHeight(2));
+		assertEquals(1, b.place(SQ, 0, 0));
+		b.commit();
+		assertEquals(2, b.clearRows());
+		assertEquals(0, b.getMaxHeight());
+		assertEquals(0, b.getRowWidth(0));
+		assertEquals(0, b.getRowWidth(1));
+		assertEquals(0, b.getColumnHeight(0));
+		assertEquals(0, b.getColumnHeight(1));
+		assertEquals(0, b.getColumnHeight(2));
+	}
+	
+	@Test
+	public void testSample5() {
+		b.undo(); b.commit();
+		assertEquals(0, b.place(L, 0, 0));
+		b.commit();
+		assertEquals(0, b.clearRows());
+		assertEquals(3, b.getMaxHeight());
+		assertEquals(2, b.getRowWidth(0));
+		assertEquals(1, b.getRowWidth(1));
+		assertEquals(3, b.getColumnHeight(0));
+		assertEquals(1, b.getColumnHeight(1));
+		assertEquals(0, b.getColumnHeight(2));
+		assertEquals(1, b.place(new Piece("1 0  1 1  1 2  0 2"), 1, 0));
+		b.commit();
+		assertEquals(3, b.getMaxHeight());
+		assertEquals(3, b.getRowWidth(0));
+		assertEquals(2, b.getRowWidth(1));
+		assertEquals(3, b.getRowWidth(2));
+		assertEquals(2, b.clearRows());
+		assertEquals(1, b.getMaxHeight());
+		assertEquals(2, b.getRowWidth(0));
+		assertEquals(0, b.getRowWidth(1));
+		assertEquals(1, b.getColumnHeight(0));
+		assertEquals(0, b.getColumnHeight(1));
+		assertEquals(1, b.getColumnHeight(2));
+		assertEquals(1, b.place(pyr3, 0, 0));
+		b.commit();
+		assertEquals(2, b.getMaxHeight());
+		assertEquals(3, b.getRowWidth(0));
+		assertEquals(3, b.getRowWidth(1));
+		assertEquals(0, b.getRowWidth(2));
+		assertEquals(2, b.clearRows());
+		assertEquals(0, b.getMaxHeight());
+		assertEquals(0, b.getRowWidth(0));
+		assertEquals(0, b.getRowWidth(1));
+		assertEquals(0, b.getColumnHeight(0));
+		assertEquals(0, b.getColumnHeight(1));
+		assertEquals(0, b.getColumnHeight(2));
+	}
+	
+	@Test
+	public void testSample6() {
+		b.commit();
+		assertEquals(1, b.clearRows());
+		assertEquals(1, b.place(pyr3, 0, 1));
+		b.commit();
+		assertEquals(1, b.clearRows());
+		assertEquals(1, b.place(pyr3, 0, 2));
+		b.commit();
+		assertEquals(1, b.clearRows());
+		assertEquals(0, b.place(pc[0], 0, 0));
+		b.commit();
+		assertEquals(1, b.place(pc[0], 2, 0));
+		b.commit();
+		assertEquals(3, b.getRowWidth(0));
+		assertEquals(3, b.getRowWidth(1));
+		assertEquals(3, b.getRowWidth(2));
+		assertEquals(2, b.getRowWidth(3));
+		assertEquals(4, b.getColumnHeight(0));
+		assertEquals(3, b.getColumnHeight(1));
+		assertEquals(4, b.getColumnHeight(2));
+		assertEquals(4, b.getMaxHeight());
+		assertEquals(3, b.clearRows());
+		assertEquals(2, b.getRowWidth(0));
+		assertEquals(1, b.getColumnHeight(0));
+		assertEquals(0, b.getColumnHeight(1));
+		assertEquals(1, b.getColumnHeight(2));
+		assertEquals(1, b.getMaxHeight());
+		assertEquals(1, b.place(pyr3, 0, 0));
+		b.commit();
+		assertEquals(3, b.getRowWidth(0));
+		assertEquals(2, b.getColumnHeight(0));
+		assertEquals(2, b.getMaxHeight());
+		assertEquals(2, b.clearRows());
+		assertEquals(0, b.getRowWidth(0));
+		assertEquals(0, b.getColumnHeight(0));
+		assertEquals(0, b.getMaxHeight());
+		assertEquals(0, b.place(SQ, 0, 0));
+		b.undo();
+		assertEquals(0, b.getRowWidth(0));
+		assertEquals(0, b.getColumnHeight(0));
+		assertEquals(0, b.getRowWidth(1));
+		assertEquals(0, b.getMaxHeight());
+	}
+	
 }

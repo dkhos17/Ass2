@@ -185,9 +185,7 @@ public class Piece {
 				makeFastRotations(new Piece(SQUARE_STR)),
 				makeFastRotations(new Piece(PYRAMID_STR)),
 			};
-		}
-		
-		
+		}	
 		return Piece.pieces;
 	}
 	

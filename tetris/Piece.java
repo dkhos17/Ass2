@@ -136,6 +136,7 @@ public class Piece {
 	public boolean equals(Object obj) {
 		if(obj == this) return true;
 		if(!(obj instanceof Piece)) return false;
+		if(obj == null) return false;
 		Piece other = (Piece)obj;
 //		Arrays.sort(other.body, (TPoint a, TPoint b) -> (a.x - b.x < 0 ? -1 : (b.x - a.x < 0 ? 1 : a.y - b.y)));
 			

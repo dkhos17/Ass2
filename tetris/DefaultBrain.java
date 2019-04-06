@@ -44,6 +44,7 @@ public class DefaultBrain implements Brain {
                 int y = board.dropHeight(current, x);
                 if (y<yBound) {    // piece does not stick up too far
                     int result = board.place(current, x, y);
+                    
                     if (result <= Board.PLACE_ROW_FILLED) {
                         if (result == Board.PLACE_ROW_FILLED) board.clearRows();
                         
@@ -69,6 +70,25 @@ public class DefaultBrain implements Brain {
         else {
             move.x = bestX;
             move.y = bestY;
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
             move.piece = bestPiece;
             move.score = bestScore;
             return(move);

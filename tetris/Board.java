@@ -16,10 +16,9 @@ public class Board	{
 	// Some ivars are stubbed out for you:
 	private int width;
 	private int height;
-	private boolean[][] board;
+	private boolean[][] board, undo_board;
 	private int[] fill_row, fill_col;
-	private Piece lastPiece;
-	private TPoint lastPoint;
+	private int[] undo_row, undo_col;
 	private boolean DEBUG = true;
 	boolean committed;
 	
@@ -34,9 +33,11 @@ public class Board	{
 		this.width = width;
 		this.height = height;
 		fill_row = new int[height];
+		undo_row = new int[height];
 		fill_col = new int[width];
-		lastPoint = new TPoint(0,0);
+		undo_col = new int[width];
 		board = new boolean[width][height];
+		undo_board = new boolean[width][height];
 		committed = true;
 		
 		// YOUR CODE HERE
@@ -133,6 +134,7 @@ public class Board	{
 	 always return true.
 	*/
 	public boolean getGrid(int x, int y) {
+		if(x < 0 || y < 0 || x >= width || y >= height) return true; 
 		return board[x][y]; // YOUR CODE HERE
 	}
 	
@@ -158,20 +160,20 @@ public class Board	{
 	*/
 	public int place(Piece piece, int x, int y) {
 		if (!committed) throw new RuntimeException("place commit problem");
-		if(x + piece.getWidth() > this.width) return PLACE_OUT_BOUNDS;
-		if(y + piece.getHeight() > this.height) return PLACE_OUT_BOUNDS;
-		if(x < 0 || y < 0) return PLACE_OUT_BOUNDS;
+		committed = false;
+		untilComm();
 		TPoint[] body = piece.getBody();
 		for(TPoint p : body) {
-			if(board[x+p.x][y+p.y])return PLACE_BAD;
-		}
-		committed = false;
-		lastPiece = piece;
-		lastPoint.x = x; lastPoint.y = y;
-		for(TPoint p : body) {
-			board[x+p.x][y+p.y] = true;
-			fill_row[y+p.y]++;
-			fill_col[x+p.x] = Math.max(fill_col[x+p.x], y+p.y+1);
+			int x0 = x+p.x;
+			int y0 = y+p.y;
+			if(x0 < 0 || x0 >= width) return PLACE_OUT_BOUNDS;
+			if(y0 < 0 || y0 >= height) return PLACE_OUT_BOUNDS;
+			
+			if(board[x0][y0]) return PLACE_BAD;
+			else board[x0][y0] = true;
+			
+			fill_row[y0]++;
+			fill_col[x0] = Math.max(fill_col[x0], y0+1);
 		}
 		for(int i = y; i < y+piece.getHeight(); i++) {
 			if(fill_row[i] == width) return PLACE_ROW_FILLED;
@@ -180,11 +182,26 @@ public class Board	{
 	}
 	
 	
+	private void untilComm() {
+		for(int i = 0; i < height; i++) undo_row[i] = fill_row[i];
+		for(int i = 0; i < width; i++) undo_col[i] = fill_col[i];
+		for(int i = 0; i < width; i++) {
+			for(int j = 0; j < height; j++) {
+				undo_board[i][j] = board[i][j];
+			}
+		}
+	}
+
+
 	/**
 	 Deletes rows that are filled all the way across, moving
 	 things above down. Returns the number of rows cleared.
 	*/
 	public int clearRows() {
+		if(committed) {
+			committed = false;
+			untilComm();
+		}
 		int clearRows = 0;
 		int max_h = getMaxHeight();
 		for(int y = 0; y < height; y++) {
@@ -223,15 +240,12 @@ public class Board	{
 	public void undo() {
 		if(committed) return;
 		commit();
-		TPoint[] body = lastPiece.getBody();
-		for(TPoint p : body) {
-			int x = lastPoint.x + p.x;
-			int y = lastPoint.y + p.y;
-			board[x][y] = false;
-			fill_row[y]--;
-			fill_col[x] = 0;
-			for(int h = 0; h < height; h++)
-				if(board[x][h])fill_col[x] = h+1;
+		for(int i = 0; i < height; i++) fill_row[i] = undo_row[i];
+		for(int i = 0; i < width; i++) fill_col[i] = undo_col[i];
+		for(int i = 0; i < width; i++) {
+			for(int j = 0; j < height; j++) {
+				board[i][j] = undo_board[i][j];
+			}
 		}
 	}
 	

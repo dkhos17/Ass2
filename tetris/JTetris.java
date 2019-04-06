@@ -274,6 +274,8 @@ public class JTetris extends JComponent {
 			currentY = y;
 			// repaint the rect where it is now
 			repaintPiece(currentPiece, currentX, currentY);
+		} else {
+			board.undo();
 		}
 		
 		return(result);

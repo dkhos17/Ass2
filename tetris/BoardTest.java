@@ -88,6 +88,7 @@ public class BoardTest {
 		b.commit();
 		assertEquals(4, b.getMaxHeight());
 		assertEquals(1, b.clearRows());
+		b.commit();
 		assertEquals(3, b.getMaxHeight());
 		assertEquals(2, b.getRowWidth(0));
 		assertEquals(2, b.getRowWidth(1));
@@ -95,6 +96,7 @@ public class BoardTest {
 		assertEquals(1, b.place(pc[0], 2, 0));
 		b.commit();
 		assertEquals(2, b.clearRows());
+		b.commit();
 		assertEquals(2, b.getMaxHeight());
 		assertEquals(2, b.getRowWidth(0));
 		assertEquals(1, b.getRowWidth(1));
@@ -105,6 +107,25 @@ public class BoardTest {
 		assertEquals(0, b.getRowWidth(1));
 		assertEquals(1, b.getColumnHeight(0));
 		assertEquals(0, b.getColumnHeight(1));
+		b.undo();
+		b.undo();
+		b.undo();
+		assertEquals(2, b.getMaxHeight());
+		assertEquals(2, b.getRowWidth(0));
+		assertEquals(1, b.getRowWidth(1));
+		assertEquals(1, b.place(pc[3].fastRotation(), 0, 0));
+		b.commit();
+		assertEquals(3, b.getMaxHeight());
+		assertEquals(2, b.clearRows());
+		assertEquals(1, b.getRowWidth(0));
+		assertEquals(0, b.getRowWidth(1));
+		b.undo();
+		b.undo();
+		assertEquals(3, b.getMaxHeight());
+		assertEquals(2, b.clearRows());
+		assertEquals(1, b.getRowWidth(0));
+		assertEquals(0, b.getRowWidth(1));
+		
 	}
 	
 	@Test
@@ -122,6 +143,7 @@ public class BoardTest {
 		assertEquals(1, b.place(pc[0], 2, 0));
 		b.commit();
 		assertEquals(2, b.clearRows());
+		b.commit();
 		assertEquals(2, b.getMaxHeight());
 		assertEquals(1, b.getRowWidth(0));
 		assertEquals(1, b.getRowWidth(1));
@@ -137,6 +159,13 @@ public class BoardTest {
 		assertEquals(0, b.getColumnHeight(0));
 		assertEquals(0, b.getColumnHeight(1));
 		assertEquals(0, b.getColumnHeight(2));
+		b.undo();
+		b.undo();
+		assertEquals(2, b.clearRows());
+		assertEquals(0, b.getMaxHeight());
+		assertEquals(0, b.getColumnHeight(2));
+		assertEquals(0, b.getRowWidth(0));
+		assertEquals(0, b.getRowWidth(1));
 	}
 	
 	@Test
@@ -145,6 +174,7 @@ public class BoardTest {
 		assertEquals(0, b.place(L, 0, 0));
 		b.commit();
 		assertEquals(0, b.clearRows());
+		b.commit();
 		assertEquals(3, b.getMaxHeight());
 		assertEquals(2, b.getRowWidth(0));
 		assertEquals(1, b.getRowWidth(1));
@@ -164,6 +194,12 @@ public class BoardTest {
 		assertEquals(1, b.getColumnHeight(0));
 		assertEquals(0, b.getColumnHeight(1));
 		assertEquals(1, b.getColumnHeight(2));
+		b.undo();
+		assertEquals(3, b.getMaxHeight());
+		assertEquals(3, b.getRowWidth(0));
+		assertEquals(2, b.getRowWidth(1));
+		assertEquals(2, b.clearRows());
+		b.commit();
 		assertEquals(1, b.place(pyr3, 0, 0));
 		b.commit();
 		assertEquals(2, b.getMaxHeight());
@@ -177,18 +213,38 @@ public class BoardTest {
 		assertEquals(0, b.getColumnHeight(0));
 		assertEquals(0, b.getColumnHeight(1));
 		assertEquals(0, b.getColumnHeight(2));
+		b.undo();
+		assertEquals(1, b.place(pyr1, 0, 2));
+		b.commit();
+		assertEquals(3, b.getRowWidth(0));
+		assertEquals(3, b.getRowWidth(1));
+		assertEquals(3, b.getRowWidth(2));
+		assertEquals(1, b.getRowWidth(3));
+		assertEquals(3, b.getColumnHeight(0));
+		assertEquals(4, b.getColumnHeight(1));
+		assertEquals(3, b.getColumnHeight(2));
+		assertEquals(3, b.clearRows());
+		assertEquals(0, b.getColumnHeight(0));
+		assertEquals(1, b.getColumnHeight(1));
+		assertEquals(0, b.getColumnHeight(2));
+		assertEquals(1, b.getRowWidth(0));
+		assertEquals(0, b.getRowWidth(1));
+		assertEquals(0, b.getRowWidth(4));
 	}
 	
 	@Test
 	public void testSample6() {
 		b.commit();
 		assertEquals(1, b.clearRows());
+		b.commit();
 		assertEquals(1, b.place(pyr3, 0, 1));
 		b.commit();
 		assertEquals(1, b.clearRows());
+		b.commit();
 		assertEquals(1, b.place(pyr3, 0, 2));
 		b.commit();
 		assertEquals(1, b.clearRows());
+		b.commit();
 		assertEquals(0, b.place(pc[0], 0, 0));
 		b.commit();
 		assertEquals(1, b.place(pc[0], 2, 0));
@@ -202,6 +258,18 @@ public class BoardTest {
 		assertEquals(4, b.getColumnHeight(2));
 		assertEquals(4, b.getMaxHeight());
 		assertEquals(3, b.clearRows());
+		b.undo();
+		assertEquals(3, b.getRowWidth(2));
+		assertEquals(2, b.getRowWidth(3));
+		assertEquals(4, b.getColumnHeight(0));
+		assertEquals(3, b.getColumnHeight(1));
+		b.undo();
+		assertEquals(3, b.getRowWidth(2));
+		assertEquals(2, b.getRowWidth(3));
+		assertEquals(4, b.getColumnHeight(0));
+		assertEquals(4, b.getColumnHeight(2));
+		assertEquals(3, b.clearRows());
+		b.commit();
 		assertEquals(2, b.getRowWidth(0));
 		assertEquals(1, b.getColumnHeight(0));
 		assertEquals(0, b.getColumnHeight(1));
@@ -216,12 +284,23 @@ public class BoardTest {
 		assertEquals(0, b.getRowWidth(0));
 		assertEquals(0, b.getColumnHeight(0));
 		assertEquals(0, b.getMaxHeight());
+		b.commit();
 		assertEquals(0, b.place(SQ, 0, 0));
+		assertEquals(2, b.getRowWidth(0));
+		assertEquals(2, b.getColumnHeight(0));
+		assertEquals(2, b.getRowWidth(1));
 		b.undo();
 		assertEquals(0, b.getRowWidth(0));
 		assertEquals(0, b.getColumnHeight(0));
 		assertEquals(0, b.getRowWidth(1));
 		assertEquals(0, b.getMaxHeight());
+		assertEquals(0, b.place(SQ, 0, 0));
+		b.commit();
+		assertEquals(2, b.getRowWidth(0));
+		assertEquals(2, b.getRowWidth(1));
+		assertEquals(2, b.getColumnHeight(0));
+		assertEquals(2, b.getColumnHeight(1));
+		assertEquals(2, b.getMaxHeight());
 	}
 	
 }

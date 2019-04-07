@@ -106,9 +106,7 @@ public class Piece {
 	public Piece computeNextRotation() {
 		TPoint[] rot_body = new TPoint[body.length];
 		for(int i = 0; i < body.length; i++) {
-//			System.out.println(body[i].x +""+body[i].y+" ");
 			rot_body[i] = new TPoint(height - body[i].y - 1, body[i].x);
-//			System.out.println(rot_body[i].x +""+rot_body[i].y+" ");
 		}
 		return new Piece(rot_body); // YOUR CODE HERE
 	}
@@ -136,7 +134,6 @@ public class Piece {
 	public boolean equals(Object obj) {
 		if(obj == this) return true;
 		if(!(obj instanceof Piece)) return false;
-		if(obj == null) return false;
 		Piece other = (Piece)obj;
 //		Arrays.sort(other.body, (TPoint a, TPoint b) -> (a.x - b.x < 0 ? -1 : (b.x - a.x < 0 ? 1 : a.y - b.y)));
 			

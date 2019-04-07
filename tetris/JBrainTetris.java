@@ -16,7 +16,7 @@ import tetris.Brain.Move;
 public class JBrainTetris extends JTetris{
 	
 	private DefaultBrain tvini;
-	private JCheckBox brainMode;
+	private JCheckBox BrainMode, ColorMode;
 	private JSlider advers;
 	private JLabel status;
 	private Move move;
@@ -26,7 +26,8 @@ public class JBrainTetris extends JTetris{
 	JBrainTetris(int pixels) {
 		super(pixels);
 		tvini= new DefaultBrain();
-		brainMode = new JCheckBox();
+		BrainMode = new JCheckBox("Brain active");
+		ColorMode = new JCheckBox("Color");
 		advers = new JSlider(0, 200, 0);
 		status = new JLabel("ok");
 	}
@@ -43,9 +44,10 @@ public class JBrainTetris extends JTetris{
 		row.add(status);
 		panel.add(row);
 		
+		
+		panel.add(ColorMode);
 		panel.add(new JLabel("Brain:"));
-		brainMode = new JCheckBox("Brain active");
-		panel.add(brainMode); 
+		panel.add(BrainMode); 	
 		
 		return panel;
 	}
@@ -53,7 +55,10 @@ public class JBrainTetris extends JTetris{
 	@Override
 	public void tick(int verb) {
 		if(!gameOn) return;
-		if(brainMode.isSelected() && verb == DOWN) {
+		if(ColorMode.isSelected()) colorMode = true;
+		else colorMode = false;
+		
+		if(BrainMode.isSelected() && verb == DOWN) {
 			board.undo();
 			if(dropped != count) {
 				move = tvini.bestMove(board, currentPiece, board.getHeight()-4, move);
@@ -70,6 +75,7 @@ public class JBrainTetris extends JTetris{
 			stopGame();
 			return;
 		}
+		
 		if(!currentPiece.equals(move.piece)) super.tick(ROTATE);
 		if(currentX > move.x) super.tick(LEFT);
 		else if(currentX < move.x) super.tick(RIGHT);
@@ -79,7 +85,10 @@ public class JBrainTetris extends JTetris{
 	public Piece pickNextPiece() {
 		int slider = advers.getValue();
 		int rand = (int)random.nextDouble();
-		if(rand >= slider) return super.pickNextPiece();
+		if(rand >= slider) {
+			status.setText("ok");
+			return super.pickNextPiece();
+		}
 		status.setText("*ok*");
 		
 		Piece worst[] = Piece.getPieces();

@@ -8,8 +8,6 @@ import java.util.*;
 import java.awt.event.*;
 import javax.swing.event.*;
 
-import java.awt.Toolkit;
-
 
 /**
  CS108 Tetris Game.
@@ -65,7 +63,8 @@ public class JTetris extends JComponent {
 	protected int currentX;
 	protected int currentY;
 	protected boolean moved;	// did the player move the piece
-	
+	protected boolean colorMode;
+	protected Color curr_color;
 	
 	// The piece we're thinking about playing
 	// -- set by computeNewPosition
@@ -555,13 +554,21 @@ public class JTetris extends JComponent {
 		// Draw the line separating the top
 		int spacerY = yPixel(board.getHeight() - TOP_SPACE - 1);
 		g.drawLine(0, spacerY, getWidth()-1, spacerY);
-
+		
+			
 
 		// check if we are drawing with clipping
 		//Shape shape = g.getClip();
 		Rectangle clip = null;
 		if (DRAW_OPTIMIZE) {
 			clip = g.getClipBounds();
+		}
+		
+		if(colorMode) g.setColor(curr_color);
+		else {
+			g.setColor(Color.black);
+			Random clr = new Random();
+			curr_color = new Color(clr.nextFloat(), clr.nextFloat(), clr.nextFloat());
 		}
 
 
@@ -593,7 +600,15 @@ public class JTetris extends JComponent {
 					
 					g.fillRect(left+1, yPixel(y)+1, dx, dy);	// +1 to leave a white border
 					
-					if (filled) g.setColor(Color.black);
+					if (filled) {
+						if(colorMode) g.setColor(curr_color);
+						else {
+							g.setColor(Color.black);
+							Random clr = new Random();
+							curr_color = new Color(clr.nextFloat(), clr.nextFloat(), clr.nextFloat());
+						}
+					}
+					
 				}
 			}
 		}

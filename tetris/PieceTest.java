@@ -79,6 +79,8 @@ public class PieceTest {
 		assertTrue(Arrays.equals(new int[] {0, 0, 0}, pyr1.getSkirt()));
 		assertTrue(Arrays.equals(new int[] {1, 0, 1}, pyr3.getSkirt()));
 		
+		assertTrue(Arrays.equals(new TPoint[] {new TPoint(0,0),new TPoint(1,0),new TPoint(1,1),new TPoint(2,0)}, pyr1.getBody()));
+		
 		assertTrue(Arrays.equals(new int[] {0, 0, 1}, s.getSkirt()));
 		assertTrue(Arrays.equals(new int[] {1, 0}, sRotated.getSkirt()));
 		assertFalse(Arrays.equals(new int[] {0, 1}, S1.getSkirt()));
@@ -94,6 +96,7 @@ public class PieceTest {
 	
 	@Test
 	public void testEquals() {
+		assertFalse(S1.equals(null));
 		assertTrue(S1.equals(S1));
 		assertFalse(S1.equals(S2));
 		assertTrue(pc[0].equals(ST));
@@ -106,6 +109,8 @@ public class PieceTest {
 		assertFalse(pc[4].equals(ST));
 		assertFalse(pc[2].equals(L1));
 		assertFalse(pc[3].equals(S2));
+		assertFalse(ST.equals(new Piece("0 0  0 1  0 2  0 3  0 4")));
+		assertFalse((new Piece("0 0  0 1  0 2  0 3  0 4")).equals(ST));
 		assertTrue(pc[6].fastRotation().equals(pyr2));
 		assertTrue(SQ.equals(SQ.computeNextRotation()));
 	}
